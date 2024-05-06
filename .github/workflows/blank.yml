@@ -1,0 +1,59 @@
+name: PHPUnit Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      custom-mysql-hostname:
+        image: mysql:5.7
+        env:
+          MYSQL_USER: lemonaid
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3          
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.3'
+        extensions: mbstring, intl, pdo_mysql, php-pdo, php-pdo-mysql, php-xml, php-json, php-mbstring, php-mysqlnd, php-gd, redis, mysql
+        coverage: none
+            
+    # - name: Install dependencies
+    #   run: composer install --prefer-dist --no-progress
+
+    - name: Install MySQL client
+      run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+    - name: Check MySQL connection
+      run: mysql --host=custom-mysql-hostname --port=3306 --user=root --password=password --execute="SELECT 1;"
+
+#    - name: Run tests
+#      env:
+#        CONFIG_PHP_PATH: config/config.local.php
+#        ENABLED_ROUTE_SETS: routes,non-production-routes
+#        DB_HOST: custom-mysql-hostname
+#        DB_PORT: 3306
+#        DB_USERNAME: root
+#        DB_PASSWORD: password
+#      run: |
+#        php vendor/bin/phpunit
