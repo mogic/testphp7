@@ -17,7 +17,7 @@ jobs:
       custom-mysql-hostname:
         image: mysql:5.7
         env:
-          MYSQL_USER: lemonaid
+          MYSQL_USER: root
           MYSQL_PASSWORD: password
           MYSQL_ROOT_PASSWORD: password
         ports:
@@ -26,9 +26,19 @@ jobs:
           --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3          
-
+          --health-retries=3     
+          
+    env:
+      DB_DATABASE: test_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
     steps:
+    - name: Set up MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+          
     - uses: actions/checkout@v3
 
     - name: Setup PHP
