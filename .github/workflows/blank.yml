@@ -11,23 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    services:
-      custom-mysql-hostname:
-        image: mysql:5.7
-        env:
-          MYSQL_USER: root
-          MYSQL_PASSWORD: password
-          MYSQL_ROOT_PASSWORD: password
-        ports:
-          - 3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3     
-          
+    runs-on: ubuntu-latest          
     env:
       DB_DATABASE: test_db
       MYSQL_USER: root
