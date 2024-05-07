@@ -14,14 +14,13 @@ jobs:
     runs-on: ubuntu-latest          
     env:
       DB_DATABASE: test_db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+      DB_USER: root
+      DB_PASSWORD: password
     steps:
     - name: Set up MySQL
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.MYSQL_USER }} -p${{ env.MYSQL_ROOT_PASSWORD }}
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
           
     - uses: actions/checkout@v3
 
