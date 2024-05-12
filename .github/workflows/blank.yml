@@ -11,19 +11,21 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest          
-    env:
-      TEST_MYSQL_HOSTNAME: 127.0.0.1
-      TEST_MYSQL_PASSWORD: password
-      TEST_MYSQL_PORT: 3306
-      TEST_MYSQL_USER: root
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: db_test
+        ports:
+          - 3306:3306
+        options:
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
-    - name: Set up MySQL
-      run: |
-        sudo /etc/init.d/mysql start
-          
-    - uses: actions/checkout@v3
-
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
